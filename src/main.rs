@@ -206,7 +206,7 @@ pub trait Game {
                 &it.original_path,
                 None,
                 Some(|current_file, total_files| {
-                    // \r returns cursor to line start; print! does not add a newline
+                    // \r returns cursor to line start
                     print!("\r- Compressing: [{}/{}]", current_file, total_files);
                     _ = io::stdout().flush();
                 }),
@@ -260,7 +260,7 @@ pub struct Cli {
 pub enum Command {
     /// List supported games
     List,
-    /// Backup the game data
+    /// Initiate a backup for a supported game
     Backup {
         /// Id (name or alias) of the game
         id: String,
@@ -308,9 +308,6 @@ impl<W: Write + Seek> ZipExt for ZipWriter<W> {
                 .to_str()
                 .ok_or_else(|| anyhow!("{} is a non utf-8 path", normalized_path.display()))?
                 .to_string();
-
-            // Write file or directory explicitly
-            // Some unzip tools unzip files with directory paths correctly, some do not!
 
             if path.is_file() {
                 self.start_file(path_str, zip_options)?;
