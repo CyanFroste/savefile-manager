@@ -1,0 +1,12 @@
+{
+    "outputPath": "./backups",
+    "games": {
+        "Project Zomboid": {
+            "dataPath": "~/Zomboid",
+            "installationPath": "path/to/steam/steamapps/common/Project Zomboid",
+            "aliases": [
+                "pz"
+            ]
+        }
+    }
+}
