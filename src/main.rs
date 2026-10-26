@@ -200,17 +200,21 @@ pub trait Game {
         let file = File::create(file_path)?;
         let mut zip = ZipWriter::new(file);
 
+        fn on_progress(current: usize, total: usize) {
+            if total == 0 {
+                return;
+            }
+
+            // this should be safe?
+            let percent = (current as f64 / total as f64) * 100.0;
+            // \r returns cursor to line start
+            print!("\r- Compressing: {percent:.2}% [{current}/{total}]");
+            _ = io::stdout().flush();
+        }
+
         for it in files {
             println!("- Adding {} to backup", it.name);
-            zip.add_all_files_from_dir(
-                &it.original_path,
-                None,
-                Some(|current_file, total_files| {
-                    // \r returns cursor to line start
-                    print!("\r- Compressing: [{}/{}]", current_file, total_files);
-                    _ = io::stdout().flush();
-                }),
-            )?;
+            zip.add_all_files_from_dir(&it.original_path, None, Some(on_progress))?;
             println!("\n- Added {} to backup", it.name);
         }
 
